@@ -67,6 +67,22 @@ QtObject {
          : "draw";
   }
 
+  function playGameOverAudio() {
+    const result = victoryResult(winner, false);
+    if (result === "win") {
+      const general = Lua.selfPlayer.general;
+      if (general) {
+        const extension = Ltk.getGeneralData(general).extension;
+        const path = SkinBank.getRandomAudio(general, extension, "win");
+        if (path) {
+          Backend.playSound(path);
+          return;
+        }
+      }
+    }
+    Backend.playSound("./audio/system/" + result);
+  }
+
   function loadSummary() {
     const summaryData = Lua.client.getBanner("GameSummary");
     if (!summaryData || summaryData.length === 0)
@@ -121,8 +137,7 @@ QtObject {
 
   onWinnerChanged: {
     if (!Config.disableGameOverAudio) {
-      Backend.playSound("./audio/system/" +
-        victoryResult(winner, false));
+      playGameOverAudio();
     }
 
     loadSummary();

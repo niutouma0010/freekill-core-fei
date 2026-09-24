@@ -1,62 +1,39 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import QtQuick
-
 import Fk
 
-Image {
-  source: SkinBank.magatamaDir + "0" + (Config.heg ? '-heg' : '')
+Item {
+  id: root
+  property string kingdom: ""
   state: "3"
-  height: 14; fillMode: Image.PreserveAspectFit
 
-  states: [
-    State {
-      name: "3"
-      PropertyChanges {
-        target: main
-        source: SkinBank.magatamaDir + "3" + (Config.heg ? '-heg' : '')
-        opacity: 1
-        scale: 1
-      }
-    },
-    State {
-      name: "2"
-      PropertyChanges {
-        target: main
-        source: SkinBank.magatamaDir + "2" + (Config.heg ? '-heg' : '')
-        opacity: 1
-        scale: 1
-      }
-    },
-    State {
-      name: "1"
-      PropertyChanges {
-        target: main
-        source: SkinBank.magatamaDir + "1" + (Config.heg ? '-heg' : '')
-        opacity: 1
-        scale: 1
-      }
-    },
-    State {
-      name: "0"
-      PropertyChanges {
-        target: main
-        source: SkinBank.magatamaDir + "0" + (Config.heg ? '-heg' : '')
-        opacity: 0
-        scale: 4
-      }
-    }
-  ]
+  // 槽位尺寸始终固定。非人勾玉的每一种血量状态都是一张完整成品图，
+  // 不再将底图、顶图、描边叠加或缩放，因此不会有任一层被拉伸或压缩。
+  width: 12
+  height: 14
 
-  transitions: Transition {
-    PropertyAnimation {
-      properties: "opacity,scale"
-    }
+  function feiMagatamaSource() {
+    const suffix = ({
+      "0": "0-disabled",
+      "1": "1-red",
+      "2": "2-orange",
+      "3": "3-yellow",
+      "4": "4-lime",
+      "5": "5-green"
+    })[String(root.state)] || "0-disabled";
+    return SkinBank.searchPkgResourceWithExtension(
+      "fei", "/image/kingdom/magatama/", suffix, ".png");
   }
 
   Image {
-    id: main
-    anchors.centerIn: parent
-    height: 14; fillMode: Image.PreserveAspectFit
+    anchors.fill: parent
+    source: root.kingdom === "fei_kingdom"
+      ? root.feiMagatamaSource()
+      : SkinBank.getPhotoMagatama(root.kingdom, Number(root.state))
+    fillMode: Image.PreserveAspectFit
+    horizontalAlignment: Image.AlignHCenter
+    verticalAlignment: Image.AlignVCenter
+    smooth: true
   }
 }

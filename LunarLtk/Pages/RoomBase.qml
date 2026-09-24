@@ -491,7 +491,7 @@ W.PageBase {
     }
     const general = photo.general;
     const extension = Ltk.getGeneralData(general).extension;
-    const path = SkinBank.getAudio(general, extension, "death");
+    const path = SkinBank.getRandomAudio(general, extension, "death");
     Backend.playSound(path);
   }
 

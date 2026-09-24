@@ -9,7 +9,20 @@ Column {
   id: root
 
   required property PhotoModel dataModel
+  property string kingdom: ""
   property var colors: ["#F4180E", "#F4180E", "#E3B006", "#25EC27"]
+
+  // 非人勾玉遵循新月杀原版：满血为绿，其他状态按体力百分比分为绿/黄/红三档。
+  function getMagatamaState() {
+    const hp = dataModel.hp;
+    const maxHp = dataModel.maxHp;
+    if (kingdom === "fei_kingdom") {
+      if (hp <= 0 || maxHp <= 0) return 0;
+      if (hp >= maxHp) return 5;
+      return Math.max(0, Math.ceil(hp / maxHp * 3) * 2 - 1);
+    }
+    return (hp >= 3 || hp >= maxHp) ? 3 : (hp <= 0 ? 0 : hp);
+  }
 
   Shield {
     id: shield
@@ -20,17 +33,14 @@ Column {
     id: repeater
     model: column.visible ? 0 : root.dataModel.maxHp
     Magatama {
+      kingdom: root.kingdom
       state: {
         const value = root.dataModel.hp;
         const maxValue = root.dataModel.maxHp;
         if (maxValue - 1 - index >= value) {
           return 0;
-        } else if (value >= 3 || value >= maxValue) {
-          return 3;
-        } else if (value <= 0) {
-          return 0;
         } else {
-          return value;
+          return root.getMagatamaState();
         }
       }
     }
@@ -47,10 +57,9 @@ Column {
     spacing: -4
 
     Magatama {
+      kingdom: root.kingdom
       state: {
-        const maxHp = root.dataModel.maxHp;
-        const hp = root.dataModel.hp;
-        return (hp >= 3 || hp >= maxHp) ? 3 : (hp <= 0 ? 0 : hp)
+        return root.getMagatamaState();
       }
     }
 
@@ -59,6 +68,9 @@ Column {
       width: root.width
       text: root.dataModel.hp
       color: {
+        if (root.kingdom === "fei_kingdom") {
+          return ["#e90000", "#e92222", "#e97422", "#c3c322", "#8dc322", "#42ae22"][root.getMagatamaState()];
+        }
         let idx;
         const hp = root.dataModel.hp;
         const maxHp = root.dataModel.maxHp;
@@ -76,9 +88,9 @@ Column {
       font.bold: true
       horizontalAlignment: Text.AlignHCenter
 
-      glow.color: "#3E3F47"
-      glow.spread: 0.8
-      glow.radius: 6
+      glow.color: root.kingdom === "fei_kingdom" ? "transparent" : "#3E3F47"
+      glow.spread: root.kingdom === "fei_kingdom" ? 0 : 0.8
+      glow.radius: root.kingdom === "fei_kingdom" ? 0 : 6
       //glow.samples: 12
     }
 

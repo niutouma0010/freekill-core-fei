@@ -469,7 +469,13 @@ Item {
     // }
 
     MediaArea {
-      source: Config.roomBg
+      source: {
+        const feiBackground = Cpp.path + "/packages/fei/image/background/25.png";
+        if (Fs.exists(feiBackground)) {
+          return (Cpp.os === "Win" ? "file:///" : "file://") + feiBackground;
+        }
+        return Config.roomBg;
+      }
       anchors.fill: parent
       fillMode: Image.PreserveAspectCrop
       pause: false
@@ -725,7 +731,7 @@ Item {
       const g = msg.slice(1);
       const extension = Ltk.getGeneralData(g).extension;
       if (!Config.disableMsgAudio) {
-        const path = SkinBank.getAudio(g, extension, msg.startsWith("!") ? "win" : "death");
+        const path = SkinBank.getRandomAudio(g, extension, msg.startsWith("!") ? "win" : "death");
         Backend.playSound(path);
       }
 

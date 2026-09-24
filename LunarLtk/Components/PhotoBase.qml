@@ -54,6 +54,8 @@ Game.BasicItem {
     lineHeight: 14
     lineHeightMode: Text.FixedHeight
     color: "white"
+    style: Text.Outline
+    styleColor: "#161616"
     width: 18
     wrapMode: Text.WrapAnywhere
     text: Lua.tr(root.general)
@@ -174,10 +176,11 @@ Game.BasicItem {
     lineHeight: 14
     lineHeightMode: Text.FixedHeight
     color: "white"
+    style: Text.Outline
+    styleColor: "#161616"
     width: 18
     wrapMode: Text.WrapAnywhere
     text: Lua.tr(root.deputyGeneral)
-    style: Text.Outline
   }
 
   Colorize {

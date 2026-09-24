@@ -187,6 +187,15 @@ QtObject {
     return searchBuiltinPic("/image/photo/back/", "unknown");
   }
 
+  // 非人学园的实心勾玉使用扩展自带素材；空勾玉仍沿用本体素材。
+  function getPhotoMagatama(kingdom, value) {
+    if (kingdom === "fei_kingdom" && value > 0) {
+      const ret = searchPkgResource("/image/kingdom/", kingdom, "-magatama.png");
+      if (ret) return ret;
+    }
+    return magatamaDir + Math.max(0, Math.min(value, 3)) + (Config.heg ? "-heg" : "");
+  }
+
   function getGeneralCardDir(kingdom) {
     let path = searchBuiltinPic("/image/card/general/", kingdom);
     if (!path) {
@@ -243,6 +252,25 @@ QtObject {
         return ret;
       }
     }
+  }
+
+  // 从实际存在的编号语音中随机取一条。没有编号文件时退回普通单文件语音。
+  function getRandomAudio(name, extension, audiotype) {
+    const basePath = "/audio/" + audiotype + "/";
+    const variants = [];
+    for (let i = 1; i < 100; i++) {
+      const path = searchAudioResourceWithExtension(
+        extension, basePath, name + i.toString(), ".mp3");
+      if (path) {
+        variants.push(path);
+      } else {
+        break;
+      }
+    }
+    if (variants.length > 0) {
+      return variants[Math.floor(Math.random() * variants.length)];
+    }
+    return searchAudioResourceWithExtension(extension, basePath, name, ".mp3");
   }
 
   // 非技能的卡牌和其他语音

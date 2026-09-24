@@ -74,6 +74,7 @@ PhotoBase {
     anchors.bottomMargin: 27
 
     dataModel: root.dataModel
+    kingdom: root.kingdom
   }
 
   Rectangle {
