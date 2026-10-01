@@ -25,10 +25,15 @@ skill:addEffect(fk.DamageCaused, {
       target = to,
       flag = { card_data = { { "equip_horse", ride_tab } } },
       skill_name = self.name,
+      prompt = "#kylin_bow_skill-discard::" .. to.id,
     })
     room:throwCard(id, skill.name, to, player)
   end,
 })
+
+Fk:loadTranslationTable {
+  ["#kylin_bow_skill-discard"] = "麒麟弓：选择弃置 %dest 装备区里的一张坐骑牌",
+}
 
 skill:addAI(Fk.Ltk.AI.newInvokeStrategy{
   think = function(self, ai)
